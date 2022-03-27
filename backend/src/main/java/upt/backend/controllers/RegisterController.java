@@ -17,6 +17,7 @@ public class RegisterController
     @Autowired
     FirebaseDatabase firebaseDatabase;
 
+    @Autowired
     private RegisterService registerService;
     @PostMapping("/register")
     public ResponseEntity<String> Register(@RequestParam("user") String user,@RequestParam("password") String password)
@@ -32,11 +33,6 @@ public class RegisterController
     @GetMapping("/hallo")
     public String Hello()
     {
-        Map<String,Object>map = new HashMap<>();
-
-        map.put("greeting","hallo");
-
-        firebaseDatabase.write(map);
 
         return "hello";
     }
