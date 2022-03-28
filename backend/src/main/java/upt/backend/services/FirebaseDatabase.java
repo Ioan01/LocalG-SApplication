@@ -2,13 +2,11 @@ package upt.backend.services;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -21,9 +19,9 @@ import java.util.stream.StreamSupport;
 @Scope("singleton")
 public class FirebaseDatabase
 {
-    private Firestore database;
+    private final Firestore database;
 
-    private int index = 0;
+    private final int index = 0;
 
     FirebaseDatabase() throws IOException
     {
@@ -41,17 +39,13 @@ public class FirebaseDatabase
 
         FirebaseApp.initializeApp(options);
 
-        database= FirestoreClient.getFirestore();
-
-
-
+        database = FirestoreClient.getFirestore();
     }
 
     public Optional<CollectionReference> getCollection(String collection)
     {
-
-        if (StreamSupport.stream(database.listCollections().spliterator(),false).anyMatch(
-                collectionReference-> collectionReference.getId().equals(collection)))
+        if (StreamSupport.stream(database.listCollections().spliterator(), false).anyMatch(
+                collectionReference -> collectionReference.getId().equals(collection)))
             return Optional.of(database.collection(collection));
         return Optional.empty();
     }
