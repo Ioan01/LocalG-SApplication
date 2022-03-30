@@ -9,6 +9,8 @@ minUser : 1
 maxUser : 100
 maxPassword : 100
 
+roles : client, provider
+
 ---
 spring:
   config:

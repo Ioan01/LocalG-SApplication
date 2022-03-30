@@ -7,6 +7,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties
@@ -21,4 +23,6 @@ public class YAMLConfig
     private int minPassword;
     private int maxUser;
     private int minUser;
+
+    private String[] roles;
 }
