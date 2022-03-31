@@ -22,12 +22,12 @@ public class User
     public String id;
     @Indexed(unique = true)
     @With
-    String username;
+    private String username;
     @With
-    String password;
+    private String password;
 
     @With
-    String role;
+    private String role;
 
     public User(String username, String password,String role)
     {

@@ -19,13 +19,13 @@ import java.util.Optional;
 public class UserService
 {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    YAMLConfig yamlConfig;
+    private YAMLConfig yamlConfig;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     private void testCredentials(@NonNull  String username,@NonNull String password,@NonNull String role)
     {
@@ -51,7 +51,6 @@ public class UserService
         @NonNull User finalUser = user
                 .withPassword(passwordEncoder.encode(user.getPassword()));
 
-
         return userRepository.save(finalUser);
     }
 
@@ -63,5 +62,11 @@ public class UserService
     public User findUser(String username)
     {
         return userRepository.findUserByUsername(username);
+    }
+
+    public void deleteUsers()
+    {
+        if (yamlConfig.getEnvironment().equals("development"))
+            userRepository.deleteAll();
     }
 }

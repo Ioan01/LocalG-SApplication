@@ -1,6 +1,5 @@
 package upt.backend.authentication;
 
-import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController
 {
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
-    JWT jwt;
+    private TokenService jwt;
 
     @PostMapping("/login")
     ResponseEntity<String> login(@RequestBody User user)

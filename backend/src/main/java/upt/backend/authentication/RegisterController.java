@@ -1,6 +1,5 @@
 package upt.backend.authentication;
 
-import com.google.common.hash.Hashing;
 import com.mongodb.DuplicateKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,13 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 @RestController
 public class RegisterController
 {
     @Autowired
-    UserService userService;
+    private UserService userService;
+
+    @Autowired
+    private TokenService jwt;
 
     @PostMapping("/register")
     ResponseEntity<User> register(@RequestBody User client)
@@ -30,7 +32,23 @@ public class RegisterController
         }
         catch (Exception e)
         {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage());
         }
+    }
+
+    @GetMapping("/deleteAll")
+    ResponseEntity<String> deleteAll(@RequestHeader("Authorization") String token )
+    {
+        try
+        {
+            HashMap audience = jwt.extractJWTMap(token);
+            userService.deleteUsers();
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Bad token provided");
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
