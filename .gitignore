@@ -27,3 +27,7 @@ hs_err_pid*
 /**/firebaseKey.json
 
 .idea/compiler.xml
+
+.idea/uiDesigner.xml
+
+backend/src/main/resources/application.properties
