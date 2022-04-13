@@ -4,21 +4,36 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.el.parser.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 
 @Service
 public class TokenService
 {
-    @Value("${security.jwt.secretKey}")
+    //@Value injection here makes TokenService unusable for the interceptors
+    //made a constructor instead
     private String secretKey;
-
-    @Value("${security.jwt.issuer}")
     private String issuer;
+
+    public TokenService(){
+        Properties prop = new Properties();
+        try{
+            prop.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
+            this.secretKey = prop.getProperty("security.jwt.secretKey");
+            this.issuer = prop.getProperty("security.jwt.issuer");
+            //System.out.println(issuer + " MERRYDO " + secretKey);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }//*/
 
     public String generateToken(UserDetails userDetails)
     {
