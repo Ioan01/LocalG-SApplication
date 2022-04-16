@@ -1,4 +1,4 @@
-package upt.backend.authentication;
+package upt.backend.user;
 
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
@@ -20,6 +20,8 @@ public class User
     @Id
     @JsonIgnore
     public String id;
+
+
     @Indexed(unique = true)
     @With
     private String username;
@@ -29,10 +31,14 @@ public class User
     @With
     private String role;
 
+    @JsonIgnore
+    private int money;
+
     public User(String username, String password,String role)
     {
         this.username = username;
         this.password = password;
         this.role = role;
+        money = 0;
     }
 }

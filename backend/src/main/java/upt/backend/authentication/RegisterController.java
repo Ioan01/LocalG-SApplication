@@ -1,11 +1,13 @@
 package upt.backend.authentication;
 
-import com.mongodb.DuplicateKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import upt.backend.security.TokenService;
+import upt.backend.user.User;
+import upt.backend.user.UserService;
 
 import java.util.HashMap;
 

@@ -1,4 +1,4 @@
-package upt.backend.authentication;
+package upt.backend.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -42,18 +42,23 @@ public class TokenService
 
         return hashMap;
     }
-    
-    public static ArrayList<String> getAuthorities(HashMap jwtmap)
+
+    public ArrayList<String> getAuthorities(HashMap jwtmap)
     {
         return (ArrayList<String>) jwtmap.get("auth");
     }
 
-    public static String getAudience(HashMap jwtmap)
+    public String getAudience(HashMap jwtmap)
     {
         return (String) jwtmap.get("aud");
     }
 
-    public static String getIssuer(HashMap jwtmap)
+    public String getUserName(String token)
+    {
+        return getAudience(extractJWTMap(token));
+    }
+
+    public String getIssuer(HashMap jwtmap)
     {
         return (String) jwtmap.get("iss");
     }
