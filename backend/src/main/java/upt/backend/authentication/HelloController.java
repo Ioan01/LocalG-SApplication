@@ -16,6 +16,6 @@ public class HelloController
     @GetMapping("/sayhello")
     public String hello(@RequestHeader("Authorization")String token)
     {
-        return "hello " + userService.findUser(TokenService.getAudience(tokenService.extractJWTMap(token))).getUsername();
+        return "hello " + userService.findUser(tokenService.getAudience(token)).getUsername();
     }
 }

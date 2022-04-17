@@ -28,12 +28,11 @@ public class TokenService
             prop.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
             this.secretKey = prop.getProperty("security.jwt.secretKey");
             this.issuer = prop.getProperty("security.jwt.issuer");
-            //System.out.println(issuer + " MERRYDO " + secretKey);
         }
         catch (Exception e){
             e.printStackTrace();
         }
-    }//*/
+    }
 
     public String generateToken(UserDetails userDetails)
     {
@@ -58,18 +57,26 @@ public class TokenService
         return hashMap;
     }
     
-    public static ArrayList<String> getAuthorities(HashMap jwtmap)
+    public HashMap getAuthorities(String token)
     {
-        return (ArrayList<String>) jwtmap.get("auth");
+        ArrayList auth = (ArrayList) extractJWTMap(token).get("auth");
+        return (HashMap)  auth.get(0);
     }
 
-    public static String getAudience(HashMap jwtmap)
+    public boolean hasAuthority(String token, String authority)
     {
-        return (String) jwtmap.get("aud");
+        System.out.println(getAuthorities(token) + " " + authority);
+        System.out.println(getAuthorities(token).containsValue(authority));
+        return getAuthorities(token).containsValue(authority);
     }
 
-    public static String getIssuer(HashMap jwtmap)
+    public String getAudience(String token)
     {
-        return (String) jwtmap.get("iss");
+        return (String) extractJWTMap(token).get("aud");
+    }
+
+    public String getIssuer(String token)
+    {
+        return (String) extractJWTMap(token).get("iss");
     }
 }

@@ -19,10 +19,10 @@ public class ProductController {
 
     @Autowired
     TokenService tokenService;
+
     @PostMapping("/add-product")
-    public String addProduct(@RequestHeader("Authorization")String token, @RequestBody Product product)
+    public ResponseEntity<String> addProduct(@RequestHeader("Token")String token, @RequestBody Product product)
     {
-        return userService.findUser(TokenService.getAudience(tokenService.extractJWTMap(token))).getUsername()
-                    + " added " + product.getName() + " to the store, which costs $" + product.getPrice();
+        return new ResponseEntity<String>(tokenService.getAudience(token) + " asked to add a product", HttpStatus.OK);
     }
 }

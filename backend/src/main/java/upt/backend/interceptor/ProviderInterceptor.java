@@ -2,7 +2,9 @@ package upt.backend.interceptor;
 
 import org.apache.el.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerInterceptor;
 import upt.backend.authentication.TokenService;
 import upt.backend.authentication.UserService;
@@ -25,14 +27,10 @@ public class ProviderInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("Authorization");
-        ArrayList auth = (ArrayList) tokenService.extractJWTMap(token).get("auth");
-        HashMap authmap = (HashMap)  auth.get(0);
-        boolean ok = authmap.containsValue("provider");
-
-        if(!ok){
+        if(!tokenService.hasAuthority(request.getHeader("Token"), "provider")){
             System.out.println("Only providers may add products");
-            return false;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Only providers may make this request");
+            //return false;
         }
         else{
             System.out.println("A provider made an add-product request");
