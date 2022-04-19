@@ -12,6 +12,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(final InterceptorRegistry registry){
         registry.addInterceptor(new ProviderInterceptor())
-                .addPathPatterns("/add-product");
+                .addPathPatterns("/products/add");
     }
 }

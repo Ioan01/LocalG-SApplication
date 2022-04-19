@@ -28,7 +28,7 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping("/add")
-    public ResponseEntity<Product> addProduct(@RequestHeader("Token")String token, @RequestParam MultipartFile image, @RequestParam() String jsonString)
+    ResponseEntity<Product> addProduct(@RequestHeader("Token")String token, @RequestParam(required = false) MultipartFile image, @RequestParam() String jsonString)
     {
         Product product = Product.productFromJson(jsonString);
         Optional<User> user = userService.getUser(tokenService.getAudience(token));
@@ -36,7 +36,6 @@ public class ProductController {
         AtomicReference<ResponseEntity<Product>> entity = new AtomicReference<>();
 
         user.ifPresentOrElse(user1 -> {
-
             product.sellerId = user1.getId();
 
             try{
@@ -44,11 +43,14 @@ public class ProductController {
             }
             catch (Exception e){
                 product.setImage(null);
-                //throw new ResponseStatusException("Image malformed",HttpStatus.BAD_REQUEST);
+                //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not encode image, maximum image size is 1MB.");
             }
 
-            entity.set(new ResponseEntity<>(productService.addProduct(product), HttpStatus.OK));;
-        },()-> {throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED);});
+            entity.set(new ResponseEntity<>(productService.addProduct(product), HttpStatus.OK));
+        },()-> {
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Could not find user " + tokenService.getAudience(token));
+        });
+
         return entity.get();
     }
 }
