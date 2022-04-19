@@ -5,21 +5,18 @@ import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import upt.backend.authentication.TokenService;
 import upt.backend.authentication.User;
 import upt.backend.authentication.UserService;
 
-import java.security.Provider;
-import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
+@RequestMapping("/products")
 public class ProductController {
     @Autowired
     UserService userService;
@@ -30,24 +27,28 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @PostMapping("/add-product")
-    public ResponseEntity<String> addProduct(@RequestHeader("Token")String token, @RequestParam MultipartFile image, @RequestParam() String jsonString)
+    @PostMapping("/add")
+    public ResponseEntity<Product> addProduct(@RequestHeader("Token")String token, @RequestParam MultipartFile image, @RequestParam() String jsonString)
     {
         Product product = Product.productFromJson(jsonString);
         Optional<User> user = userService.getUser(tokenService.getAudience(token));
-        if(user.isEmpty())
-            return new ResponseEntity<>("Could not identify provider", HttpStatus.NOT_FOUND);
 
-        try{
-            product.setImage(new Binary(BsonBinarySubType.BINARY, image.getBytes()));
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.I_AM_A_TEAPOT);
-        }
+        AtomicReference<ResponseEntity<Product>> entity = new AtomicReference<>();
 
-        product.sellerId = user.get().getId();
-        productService.addProduct(product);
+        user.ifPresentOrElse(user1 -> {
 
-        return new ResponseEntity<String>(user.get().getUsername() + " is selling " + product.getName(), HttpStatus.OK);
+            product.sellerId = user1.getId();
+
+            try{
+                product.setImage(new Binary(BsonBinarySubType.BINARY, image.getBytes()));
+            }
+            catch (Exception e){
+                product.setImage(null);
+                //throw new ResponseStatusException("Image malformed",HttpStatus.BAD_REQUEST);
+            }
+
+            entity.set(new ResponseEntity<>(productService.addProduct(product), HttpStatus.OK));;
+        },()-> {throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED);});
+        return entity.get();
     }
 }
