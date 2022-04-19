@@ -15,6 +15,7 @@ import upt.backend.authentication.TokenService;
 import upt.backend.authentication.User;
 import upt.backend.authentication.UserService;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -30,8 +31,14 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
+    @Autowired
+    Gson gson;
+
     @PostMapping("/add")
-    ResponseEntity<Product> addProduct(@RequestHeader("Token")String token, @RequestParam(required = false) MultipartFile image, @RequestParam() String jsonString)
+    ResponseEntity<Product> addProduct(
+            @RequestHeader("Token")String token,
+            @RequestParam(required = false) MultipartFile image,
+            @RequestParam() String jsonString)
     {
         Product product = Product.productFromJson(jsonString);
         Optional<User> user = userService.getUser(tokenService.getAudience(token));
@@ -58,20 +65,22 @@ public class ProductController {
     }
 
     @GetMapping("/get-page")
-    ResponseEntity<String> getProducts( //change requestparam to json body
-                                @RequestHeader("Token")String token,
-                                @RequestParam(defaultValue = "0") int page,
-                                @RequestParam(defaultValue = "2") int size){
+    ResponseEntity<String> getProducts(
+            @RequestHeader("Token")String token,
+            @RequestBody()Map<String, Integer> request){
         try{
-            Page<Product> pageProducts = productService.getPage(page, size);
+            if(!request.containsKey("page"))
+                request.put("page", 0);
+            if(!request.containsKey("size"))
+                request.put("size", 2);
+            Page<Product> pageProducts = productService.getPage(request.get("page"), request.get("size"));
 //*
-            JsonObject json = new JsonObject();
-            Gson gson = new Gson();
-            json.add("products", gson.toJsonTree(pageProducts.getContent()));
-            json.addProperty("currentPage", pageProducts.getNumber());
-            json.addProperty("totalItems", pageProducts.getTotalElements());
-            json.addProperty("totalPages", pageProducts.getTotalPages());
-            return new ResponseEntity<>(json.toString(), HttpStatus.OK);//*/
+            JsonObject response = new JsonObject();
+            response.add("products", gson.toJsonTree(pageProducts.getContent()));
+            response.addProperty("currentPage", pageProducts.getNumber());
+            response.addProperty("totalItems", pageProducts.getTotalElements());
+            response.addProperty("totalPages", pageProducts.getTotalPages());
+            return new ResponseEntity<>(response.toString(), HttpStatus.OK);//*/
             /*
             Map<String, Object> response = new HashMap<>();
             response.put("products", pageProducts.getContent());
