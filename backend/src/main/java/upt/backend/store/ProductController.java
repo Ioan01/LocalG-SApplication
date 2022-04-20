@@ -15,6 +15,7 @@ import upt.backend.authentication.TokenService;
 import upt.backend.authentication.User;
 import upt.backend.authentication.UserService;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -94,4 +95,27 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
+
+    @GetMapping("/get-filtered-page")
+    ResponseEntity<String> getFilteredProducts(
+            @RequestHeader("Token")String token,
+            @RequestBody Filter request){
+        try{
+            //HANDLE NULL PARAMETERS
+            //HANDLE NO TAGS (in productrepo)
+            Page<Product> pageProducts = productService.getFilteredPage(request);
+            JsonObject response = new JsonObject();
+            response.add("products", gson.toJsonTree(pageProducts.getContent()));
+            response.addProperty("currentPage", pageProducts.getNumber());
+            response.addProperty("totalItems", pageProducts.getTotalElements());
+            response.addProperty("totalPages", pageProducts.getTotalPages());
+            return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
+
 }
+
+
