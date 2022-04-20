@@ -38,25 +38,13 @@ public class ProductController {
     @PostMapping("/add")
     ResponseEntity<Product> addProduct(
             @RequestHeader("Token")String token,
-            @RequestParam(required = false) MultipartFile image,
-            @RequestParam() String jsonString)
+            @RequestBody Product product)
     {
-        Product product = Product.productFromJson(jsonString);
         Optional<User> user = userService.getUser(tokenService.getAudience(token));
-
         AtomicReference<ResponseEntity<Product>> entity = new AtomicReference<>();
 
         user.ifPresentOrElse(user1 -> {
             product.sellerId = user1.getId();
-
-            try{
-                product.setImage(new Binary(BsonBinarySubType.BINARY, image.getBytes()));
-            }
-            catch (Exception e){
-                product.setImage(null);
-                //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not encode image, maximum image size is 1MB.");
-            }
-
             entity.set(new ResponseEntity<>(productService.addProduct(product), HttpStatus.OK));
         },()-> {
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Could not find user " + tokenService.getAudience(token));

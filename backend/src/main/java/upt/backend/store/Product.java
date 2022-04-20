@@ -34,11 +34,11 @@ public class Product {
     @With
     private String type;
     @JsonIgnore
-    private Binary image;
+    private String image;
     @JsonIgnore
     private ArrayList<String> tags;
 
-    public Product(String name, int price, String description, String type, Binary image, ArrayList<String> tags) {
+    public Product(String name, int price, String description, String type, String image, ArrayList<String> tags) {
         this.name = name;
         this.price = price;
         this.description = description;
