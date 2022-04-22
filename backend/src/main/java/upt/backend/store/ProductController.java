@@ -2,20 +2,16 @@ package upt.backend.store;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.bson.BsonBinarySubType;
-import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import upt.backend.authentication.TokenService;
 import upt.backend.authentication.User;
 import upt.backend.authentication.UserService;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,7 +33,7 @@ public class ProductController {
 
     @PostMapping("/add")
     ResponseEntity<Product> addProduct(
-            @RequestHeader("Token")String token,
+            @RequestHeader("Authorization")String token,
             @RequestBody Product product)
     {
         Optional<User> user = userService.getUser(tokenService.getAudience(token));
@@ -54,53 +50,33 @@ public class ProductController {
     }
 
     @GetMapping("/get-page")
-    ResponseEntity<String> getProducts(
-            @RequestHeader("Token")String token,
-            @RequestBody()Map<String, Integer> request){
+    ResponseEntity<ProductsEntity> getProducts(@RequestParam int page,@RequestParam int pageSize){
         try{
-            if(!request.containsKey("page"))
-                request.put("page", 0);
-            if(!request.containsKey("size"))
-                request.put("size", 2);
-            Page<Product> pageProducts = productService.getPage(request.get("page"), request.get("size"));
+
+            Page<Product> pageProducts = productService.getPage(page, pageSize);
 //*
-            JsonObject response = new JsonObject();
-            response.add("products", gson.toJsonTree(pageProducts.getContent()));
-            response.addProperty("currentPage", pageProducts.getNumber());
-            response.addProperty("totalItems", pageProducts.getTotalElements());
-            response.addProperty("totalPages", pageProducts.getTotalPages());
-            return new ResponseEntity<>(response.toString(), HttpStatus.OK);//*/
-            /*
-            Map<String, Object> response = new HashMap<>();
-            response.put("products", pageProducts.getContent());
-            response.put("currentPage", pageProducts.getNumber());
-            response.put("totalItems", pageProducts.getTotalElements());
-            response.put("totalPages", pageProducts.getTotalPages());
-            return new ResponseEntity<>(response, HttpStatus.OK);//*/
+            ProductsEntity products = new ProductsEntity(pageProducts);
+
+            return new ResponseEntity<>(products, HttpStatus.OK);//*/
 
         }
         catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/get-filtered-page")
-    ResponseEntity<String> getFilteredProducts(
-            @RequestHeader("Token")String token,
+    ResponseEntity<ProductsEntity> getFilteredProducts(
             @RequestBody Filter request){
         try{
             //HANDLE NULL PARAMETERS
             //HANDLE NO TAGS (in productrepo)
             Page<Product> pageProducts = productService.getFilteredPage(request);
-            JsonObject response = new JsonObject();
-            response.add("products", gson.toJsonTree(pageProducts.getContent()));
-            response.addProperty("currentPage", pageProducts.getNumber());
-            response.addProperty("totalItems", pageProducts.getTotalElements());
-            response.addProperty("totalPages", pageProducts.getTotalPages());
-            return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+            ProductsEntity products = new ProductsEntity(pageProducts);
+            return new ResponseEntity<>(products, HttpStatus.OK);
         }
         catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
