@@ -34,23 +34,13 @@ public class Product {
     @With
     private String type;
     @JsonIgnore
-    private String image;
-    @JsonIgnore
     private ArrayList<String> tags;
 
-    public Product(String name, int price, String description, String type, String image, ArrayList<String> tags) {
+    public Product(String name, int price, String description, String type, ArrayList<String> tags) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.type = type;
-        this.image = image;
         this.tags = tags;
-    }
-
-    public static Product productFromJson(String jsonString){
-        Gson gson = new Gson();
-        JsonParser parser = new JsonParser();
-        JsonObject json = (JsonObject) parser.parse(jsonString);
-        return gson.fromJson(json, Product.class);
     }
 }

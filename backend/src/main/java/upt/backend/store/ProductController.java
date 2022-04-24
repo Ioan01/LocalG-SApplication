@@ -49,26 +49,11 @@ public class ProductController {
         return entity.get();
     }
 
-    @GetMapping("/get-page")
-    ResponseEntity<ProductsEntity> getProducts(@RequestParam int page,@RequestParam int pageSize){
-        try{
-
-            Page<Product> pageProducts = productService.getPage(page, pageSize);
-//*
-            ProductsEntity products = new ProductsEntity(pageProducts);
-
-            return new ResponseEntity<>(products, HttpStatus.OK);//*/
-
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @GetMapping("/get-filtered-page")
     ResponseEntity<ProductsEntity> getFilteredProducts(
-            @RequestBody Filter request){
+            Filter request){
         try{
+            System.out.println(request.getTags());
             //HANDLE NULL PARAMETERS
             //HANDLE NO TAGS (in productrepo)
             Page<Product> pageProducts = productService.getFilteredPage(request);

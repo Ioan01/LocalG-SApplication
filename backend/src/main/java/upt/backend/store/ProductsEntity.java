@@ -19,10 +19,11 @@ public class ProductsEntity
     @JsonProperty
     private long totalPages;
     @JsonProperty
+    private int currentPage;
+    @JsonProperty
     private List<Product> products;
 
-    @JsonProperty
-    private int currentPage;
+
 
     public ProductsEntity(Page<Product> pageProducts)
     {
