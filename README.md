@@ -29,6 +29,15 @@ This application is an exercise for the FIS laboratory. You can find the lab ass
 - [Digital Ocean - for deployment](https://www.digitalocean.com/)
 - [JWT authorization](https://jwt.io/)
 - [Mongodb - database](https://www.mongodb.com/)
+- [Maven](https://maven.apache.org/)
+
+## Deployment
+```
+cd backend
+mvn clean package
+cd target
+java -jar <jarFile>
+```
 
 ## REST api documentation
 - [Postman link]()
