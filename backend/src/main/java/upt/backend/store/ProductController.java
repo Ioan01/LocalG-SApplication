@@ -1,7 +1,5 @@
 package upt.backend.store;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -12,7 +10,6 @@ import upt.backend.authentication.TokenService;
 import upt.backend.authentication.User;
 import upt.backend.authentication.UserService;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -21,15 +18,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ProductController {
     @Autowired
     UserService userService;
-
     @Autowired
     TokenService tokenService;
-
     @Autowired
     ProductService productService;
-
-    @Autowired
-    Gson gson;
 
     @PostMapping("/add")
     ResponseEntity<Product> addProduct(
@@ -55,16 +47,15 @@ public class ProductController {
         try{
             System.out.println(request.getTags());
             //HANDLE NULL PARAMETERS
-            //HANDLE NO TAGS (in productrepo)
             Page<Product> pageProducts = productService.getFilteredPage(request);
             ProductsEntity products = new ProductsEntity(pageProducts);
             return new ResponseEntity<>(products, HttpStatus.OK);
         }
         catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }
 
 

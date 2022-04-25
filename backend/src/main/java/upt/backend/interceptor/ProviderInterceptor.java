@@ -27,7 +27,7 @@ public class ProviderInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(!tokenService.hasAuthority(request.getHeader("Token"), "provider")){
+        if(!tokenService.hasAuthority(request.getHeader("Authorization"), "provider")){
             System.out.println("Only providers may add products");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Only providers may make this request");
             //return false;

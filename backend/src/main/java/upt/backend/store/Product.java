@@ -1,8 +1,5 @@
 package upt.backend.store;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,6 +30,7 @@ public class Product {
     private String description;
     @With
     private String type;
+    private String image;
     @JsonIgnore
     private ArrayList<String> tags;
 

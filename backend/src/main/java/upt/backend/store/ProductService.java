@@ -6,17 +6,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import upt.backend.images.PhotoService;
 
 @Service
 public class ProductService {
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    PhotoService photoService;
 
     public Product addProduct(@NonNull Product product){
+        if(!product.getImage().isEmpty())
+            product.setImage(photoService.addPhoto(product.getImage()));
         return productRepository.save(product);
     }
 
@@ -30,7 +31,11 @@ public class ProductService {
     {
         Pageable paging = PageRequest.of(filter.getPage(), filter.getSize());
 
-        return productRepository.getByFilter(
+        if(filter.getTags().isEmpty())
+            return productRepository.getByFilterNoTags(
+                    filter.getName(), filter.getMinPrice(), filter.getMaxPrice(), filter.getType(), paging);
+        else
+            return productRepository.getByFilter(
                filter.getTags(), filter.getName(), filter.getMinPrice(), filter.getMaxPrice(), filter.getType(), paging);
 
     }
