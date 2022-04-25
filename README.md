@@ -31,7 +31,58 @@ This application is an exercise for the FIS laboratory. You can find the lab ass
 - [Mongodb - database](https://www.mongodb.com/)
 - [Maven](https://maven.apache.org/)
 
-## Deployment
+# Deployment
+
+For deployment the following files need to be created in backend/src/main/resources
+
+#### application.properties 
+
+```
+
+spring.data.mongodb.uri=mongodb+srv://<user>:<password>@server
+
+spring.data.mongodb.auto-index-creation=true
+
+spring.profiles.active = development
+
+server.error.include-message=always
+
+security.jwt.secretKey = <256-byte key>
+
+security.jwt.issuer = <your issuer>
+```
+#### application.yml
+
+```
+spring:
+  config:
+    activate:
+      on-profile: development
+
+environment: development
+minPassword : 1
+minUser : 1
+maxUser : 100
+maxPassword : 100
+
+roles : client, provider
+
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+
+environment: production
+minPassword : 12
+minUser : 6
+maxUser : 20
+maxPassword : 20
+```
+
+#### To generate a working jar : 
+
+
 ```
 cd backend
 mvn clean package
