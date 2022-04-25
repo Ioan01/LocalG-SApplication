@@ -1,4 +1,4 @@
-package upt.backend.user;
+package upt.backend.authentication;
 
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;

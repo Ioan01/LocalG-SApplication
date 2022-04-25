@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import upt.backend.user.UserRepository;
+import upt.backend.authentication.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class MongoUserDetailsService implements UserDetailsService
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
-        upt.backend.user.User user = userRepository.findUserByUsername(username);
+        upt.backend.authentication.User user = userRepository.findUserByUsername(username);
 
         return new User(user.getUsername(),user.getPassword(),
                 new ArrayList<>(List.of(new SimpleGrantedAuthority(user.getRole()))));

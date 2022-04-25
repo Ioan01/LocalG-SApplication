@@ -31,3 +31,5 @@ hs_err_pid*
 .idea/uiDesigner.xml
 
 backend/src/main/resources/application.properties
+
+backend/deploy.sh

@@ -1,4 +1,4 @@
-package upt.backend.user;
+package upt.backend.authentication;
 
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
