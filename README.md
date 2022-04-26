@@ -3,6 +3,9 @@ LocalG&SApplication
 # **Mock Goods and Services Marketplace Application**
 
 ## _Introduction_
+
+The project is currently under construction. Most new features are scattered between different development branches. Currently, main only features stable and final functionalities.
+
 This is only the backend providing the REST api for the project. The frontend consuming this API is found [here](https://github.com/Ioan01/G-SFrontend)
 
 This application is an exercise for the FIS laboratory. You can find the lab assignment on the [lab web page](http://labs.cs.upt.ro/~oose/pmwiki.php/FSE/LAB2019).
