@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import upt.backend.images.PhotoService;
 
+import java.util.Date;
+
 @Service
 public class ProductService {
     @Autowired
@@ -18,6 +20,7 @@ public class ProductService {
     public Product addProduct(@NonNull Product product){
         if(!product.getImage().isEmpty())
             product.setImage(photoService.addPhoto(product.getImage()));
+        product.setTime(new Date());
         return productRepository.save(product);
     }
 
