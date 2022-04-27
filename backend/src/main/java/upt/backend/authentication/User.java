@@ -21,6 +21,9 @@ public class User
     @JsonIgnore
     public String id;
 
+    @With
+    @JsonIgnore
+    public String imageID;
 
     @Indexed(unique = true)
     @With

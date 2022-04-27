@@ -22,7 +22,7 @@ public class RegisterController
     {
         try
         {
-            return new ResponseEntity(userService.addUser(client)
+            return new ResponseEntity(userService.addUser(client).withPassword(null)
                     ,HttpStatus.OK);
         }
         catch (org.springframework.dao.DuplicateKeyException e)
@@ -35,12 +35,13 @@ public class RegisterController
         }
     }
 
+    /// ONLY FOR DEVELOPMENT VERSIONS
     @GetMapping("/deleteAll")
     ResponseEntity<String> deleteAll(@RequestHeader("Authorization") String token )
     {
         try
         {
-            HashMap audience = jwt.extractJWTMap(token);
+            String user = jwt.getAudience(token);
             userService.deleteUsers();
         }
         catch (Exception e)

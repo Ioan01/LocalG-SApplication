@@ -41,6 +41,21 @@ public class ProductController {
         return entity.get();
     }
 
+    @GetMapping("/get-page")
+    ResponseEntity<ProductsEntity> getProducts( //change requestparam to json body
+                                        @RequestHeader("Authorization")String token,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "2") int size){
+        try{
+            ProductsEntity product = new ProductsEntity(productService.getPage(page, size));
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/get-filtered-page")
     ResponseEntity<ProductsEntity> getFilteredProducts(
             Filter request){
