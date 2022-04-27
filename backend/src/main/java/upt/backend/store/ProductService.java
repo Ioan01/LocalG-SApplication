@@ -40,6 +40,9 @@ public class ProductService {
         else
             return productRepository.getByFilter(
                filter.getTags(), filter.getName(), filter.getMinPrice(), filter.getMaxPrice(), filter.getType(), paging);
+    }
 
+    Product remove(String id, String sellerId){
+        return productRepository.removeByIdAndSellerId(id, sellerId);
     }
 }
