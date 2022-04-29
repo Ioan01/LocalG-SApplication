@@ -26,6 +26,7 @@ This application is an exercise for the FIS laboratory. You can find the lab ass
  - Account creation / deletion
  - Product addition
  - Store viewing and filtering
+ - Image uniqueness based on the image hashCode
 
 ## Technologies used
 - [Spring Boot](https://spring.io/projects/spring-boot)
