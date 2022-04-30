@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Document("store")
 @Data
@@ -31,8 +32,8 @@ public class Product {
     @With
     private String type;
     private String image;
-    @JsonIgnore
     private ArrayList<String> tags;
+    private Date time;
 
     public Product(String name, int price, String description, String type, ArrayList<String> tags) {
         this.name = name;

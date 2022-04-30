@@ -10,6 +10,7 @@ import upt.backend.authentication.TokenService;
 import upt.backend.authentication.User;
 import upt.backend.authentication.UserService;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -43,9 +44,10 @@ public class ProductController {
 
     @GetMapping("/get-page")
     ResponseEntity<ProductsEntity> getProducts( //change requestparam to json body
-                                        @RequestHeader("Authorization")String token,
-                                        @RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "10") int size){
+                                                @RequestHeader("Authorization")String token,
+                                                @RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "10") int size){
+
         try{
             ProductsEntity product = new ProductsEntity(productService.getPage(page, size));
             return new ResponseEntity<>(product, HttpStatus.OK);
@@ -70,6 +72,23 @@ public class ProductController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
             //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/remove")
+    ResponseEntity<Product> removeProduct(
+            @RequestHeader("Authorization")String token,
+            @RequestBody Map<String, String> requestBody)
+    {
+        if(!requestBody.containsKey("id"))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Expected id of product in json body");
+
+        String productId = requestBody.get("id");
+        Product deleted = productService.remove(productId, userService.getUser(tokenService.getAudience(token)).get().getId());
+
+        if(deleted != null)
+            return new ResponseEntity<>(deleted, HttpStatus.OK);
+        else
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Product does not exist or is not yours.");
     }
 }
 

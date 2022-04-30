@@ -30,7 +30,7 @@ public class PhotoController {
             value = "/image",
             produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody byte[] getImage(@RequestParam("id") String id){
-        Photo photo = photoService.getPhoto(id);
+        Photo photo = photoService.getPhotoById(id);
         return photo.getImage();
     }
 }
