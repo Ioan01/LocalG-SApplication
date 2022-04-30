@@ -20,6 +20,11 @@ public class User
     @Id
     @JsonIgnore
     public String id;
+
+    @With
+    @JsonIgnore
+    public String imageID;
+
     @Indexed(unique = true)
     @With
     private String username;
@@ -29,10 +34,14 @@ public class User
     @With
     private String role;
 
+    @JsonIgnore
+    private int money;
+
     public User(String username, String password,String role)
     {
         this.username = username;
         this.password = password;
         this.role = role;
+        money = 0;
     }
 }

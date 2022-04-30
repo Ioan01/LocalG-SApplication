@@ -1,6 +1,5 @@
 package upt.backend.authentication;
 
-import com.mongodb.DuplicateKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +22,12 @@ public class RegisterController
     {
         try
         {
-            return new ResponseEntity(userService.addUser(client)
+            return new ResponseEntity(userService.addUser(client).withPassword(null)
                     ,HttpStatus.OK);
         }
-        catch (DuplicateKeyException e)
+        catch (org.springframework.dao.DuplicateKeyException e)
         {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Username already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"Username already exists");
         }
         catch (Exception e)
         {
@@ -36,12 +35,13 @@ public class RegisterController
         }
     }
 
+    /// ONLY FOR DEVELOPMENT VERSIONS
     @GetMapping("/deleteAll")
     ResponseEntity<String> deleteAll(@RequestHeader("Authorization") String token )
     {
         try
         {
-            HashMap audience = jwt.extractJWTMap(token);
+            String user = jwt.getAudience(token);
             userService.deleteUsers();
         }
         catch (Exception e)

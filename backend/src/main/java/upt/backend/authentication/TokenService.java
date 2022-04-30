@@ -5,9 +5,12 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.el.parser.Token;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -21,6 +24,10 @@ public class TokenService
     //made a constructor instead
     private String secretKey;
     private String issuer;
+
+    @Autowired
+    private UserService userService;
+
 
     public TokenService(){
         Properties prop = new Properties();
@@ -56,7 +63,7 @@ public class TokenService
 
         return hashMap;
     }
-    
+
     public HashMap getAuthorities(String token)
     {
         ArrayList auth = (ArrayList) extractJWTMap(token).get("auth");
@@ -72,7 +79,9 @@ public class TokenService
 
     public String getAudience(String token)
     {
-        return (String) extractJWTMap(token).get("aud");
+        // user has valid token, but deleted their account
+        return userService.getUser((String) extractJWTMap(token).get("aud")).orElseThrow(
+                ()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Account deleted")).getUsername();
     }
 
     public String getIssuer(String token)
