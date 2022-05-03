@@ -48,6 +48,7 @@ public class ProductController {
                                                 @RequestParam(defaultValue = "0") int page,
                                                 @RequestParam(defaultValue = "10") int size){
 
+
         try{
             ProductsEntity product = new ProductsEntity(productService.getPage(page, size));
             return new ResponseEntity<>(product, HttpStatus.OK);
