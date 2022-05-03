@@ -15,4 +15,5 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     @Query("{'name': {$regex: ?0}, 'price': {$gt: ?1}, 'price': {$lt: ?2}, 'type': {$eq: ?3}}")
     Page<Product> getByFilterNoTags(String name, int minPrice, int maxPrice, String type, Pageable pageable);
 
+    Product removeByIdAndSellerId(String id, String sellerId);
 }

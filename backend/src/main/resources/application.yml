@@ -1,3 +1,5 @@
+
+
 spring:
   config:
     activate:
@@ -10,7 +12,8 @@ maxUser : 100
 maxPassword : 100
 
 roles : client, provider
-
+server:
+  port: 8081
 ---
 spring:
   config:
@@ -22,3 +25,5 @@ minPassword : 12
 minUser : 6
 maxUser : 20
 maxPassword : 20
+server:
+  port: 8081
