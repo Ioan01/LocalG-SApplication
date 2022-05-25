@@ -70,6 +70,10 @@ public class UserService
         return userRepository.save(finalUser);
     }
 
+    public User removeUser(@NonNull String username){
+        return userRepository.deleteUserByUsername(username);
+    }
+
     public Optional<User>getUser(@NonNull String username)
     {
         return Optional.ofNullable(userRepository.findUserByUsername(username));

@@ -8,7 +8,9 @@ import org.springframework.web.server.ResponseStatusException;
 import upt.backend.authentication.TokenService;
 import upt.backend.authentication.User;
 import upt.backend.authentication.UserService;
+import upt.backend.store.Product;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -39,6 +41,17 @@ public class UserProfileController
                 ()-> {throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED);});
 
         return new ResponseEntity<>(newUser.get().withPassword(null),HttpStatus.OK);
+    }
+
+    @PostMapping("/remove")
+    ResponseEntity<User> removeProduct(
+            @RequestHeader("Authorization")String token)
+    {
+        User deleted = userService.removeUser(tokenService.getAudience(token));
+        if(deleted != null)
+            return new ResponseEntity<>(deleted, HttpStatus.OK);
+        else
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Product does not exist or is not yours.");
     }
 
 }
